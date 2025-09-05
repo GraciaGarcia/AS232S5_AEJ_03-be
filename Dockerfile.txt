@@ -1,0 +1,5 @@
+docker build -t juan321/age-detector-be:latest .
+
+docker run -d --name backend -p 8085:8085 juan321/age-detector-be:latest
+
+docker push juan321/age-detector-be:latest
