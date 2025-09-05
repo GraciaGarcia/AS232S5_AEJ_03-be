@@ -46,6 +46,15 @@ Spring WebFlux | Data R2DBC | Project Reactor | R2DBC PostgreSQL
 </dependency>
 
 
+Url de Swagger: http://localhost:8080/swagger-ui/index.html
+
+
+Enlace del video : https://youtu.be/_0aPnlE2Xi4
+
+<img width="1376" height="873" alt="image" src="https://github.com/user-attachments/assets/09cd3e6b-d699-428c-9fda-dbc76f518383" />
+
+
+
 
 
 
