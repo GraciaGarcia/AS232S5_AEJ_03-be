@@ -1,25 +1,30 @@
 package edu.pe.vallegrande.AIOME.repository;
 
 import edu.pe.vallegrande.AIOME.model.Aiome;
-import org.springframework.data.r2dbc.repository.Query;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
-public interface AiomeRepository extends ReactiveCrudRepository<Aiome, Integer> {
+public interface AiomeRepository extends JpaRepository<Aiome, Integer> {
 
-    @Query("SELECT * FROM aiome WHERE aitype = :aitype AND status = 'A'")
-    Flux<Aiome> findByAitype(String aitype);
+    List<Aiome> findByAitypeAndStatus(String aitype, String status);
+    List<Aiome> findByStatus(String status);
+    List<Aiome> findByAitype(String aitype);
 
-    @Query("SELECT * FROM aiome WHERE status = :status")
-    Flux<Aiome> findByStatus(String status);
+    @Transactional
+    @Modifying
+    @Query("UPDATE Aiome a SET a.status = 'A' WHERE a.id = :id")
+    void restoreById(Integer id);
 
-    @Query("UPDATE aiome SET status = 'A' WHERE id = :id")
-    Mono<Integer> restoreById(Integer id);
+    @Transactional
+    @Modifying
+    @Query("UPDATE Aiome a SET a.status = 'I' WHERE a.id = :id")
+    void softDeleteById(Integer id);
 
-    @Query("UPDATE aiome SET status = 'I' WHERE id = :id")
-    Mono<Integer> softDeleteById(Integer id);
-
-    @Query("UPDATE aiome SET question = :question, response = :response WHERE id = :id")
-    Mono<Integer> updateQuestionAndResponse(Integer id, String question, String response);
+    @Transactional
+    @Modifying
+    @Query("UPDATE Aiome a SET a.question = :question, a.response = :response WHERE a.id = :id")
+    void updateQuestionAndResponse(Integer id, String question, String response);
 }

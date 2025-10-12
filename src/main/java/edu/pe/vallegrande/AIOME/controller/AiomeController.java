@@ -6,8 +6,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/aiome")
@@ -19,58 +22,76 @@ public class AiomeController {
 
     @GetMapping
     @Operation(summary = "Obtener todos los registros activos")
-    public Flux<Aiome> getAllActive() {
+    public List<Aiome> getAllActive() {
         return aiomeService.findAllActive();
     }
 
     @GetMapping("/aitype/{aitype}")
     @Operation(summary = "Listar por tipo de AI")
-    public Flux<Aiome> getByAitype(@PathVariable String aitype) {
+    public List<Aiome> getByAitype(@PathVariable String aitype) {
         return aiomeService.findByAitype(aitype.toUpperCase());
     }
 
     @GetMapping("/status/{status}")
     @Operation(summary = "Listar por estado")
-    public Flux<Aiome> getByStatus(@PathVariable String status) {
+    public List<Aiome> getByStatus(@PathVariable String status) {
         return aiomeService.findByStatus(status);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Obtener por ID")
-    public Mono<Aiome> getById(@PathVariable Integer id) {
-        return aiomeService.findById(id);
+    public ResponseEntity<Aiome> getById(@PathVariable Integer id) {
+        Aiome aiome = aiomeService.findById(id);
+        if (aiome != null) {
+            return ResponseEntity.ok(aiome);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping
     @Operation(summary = "Crear nueva pregunta")
-    public Mono<Aiome> create(@RequestParam String question,
-                              @RequestParam String aitype) {
-        return aiomeService.create(question, aitype);
+    public ResponseEntity<Aiome> create(@RequestParam String question,
+                                        @RequestParam String aitype) {
+        Aiome aiome = aiomeService.create(question, aitype);
+        return ResponseEntity.ok(aiome);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Editar pregunta y respuesta")
-    public Mono<Aiome> update(@PathVariable Integer id,
-                              @RequestParam String question,
-                              @RequestParam String response) {
-        return aiomeService.update(id, question, response);
+    public ResponseEntity<Aiome> update(@PathVariable Integer id,
+                                        @RequestParam String question,
+                                        @RequestParam String response) {
+        Aiome aiome = aiomeService.update(id, question, response);
+        return ResponseEntity.ok(aiome);
     }
 
     @DeleteMapping("/soft/{id}")
     @Operation(summary = "Eliminado lógico (status = 'I')")
-    public Mono<Void> softDelete(@PathVariable Integer id) {
-        return aiomeService.softDelete(id);
+    public ResponseEntity<Void> softDelete(@PathVariable Integer id) {
+        aiomeService.softDelete(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/restore/{id}")
     @Operation(summary = "Restaurar registro (status = 'A')")
-    public Mono<Void> restore(@PathVariable Integer id) {
-        return aiomeService.restore(id);
+    public ResponseEntity<Void> restore(@PathVariable Integer id) {
+        aiomeService.restore(id);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminado físico")
-    public Mono<Void> permanentDelete(@PathVariable Integer id) {
-        return aiomeService.permanentDelete(id);
+    public ResponseEntity<Void> permanentDelete(@PathVariable Integer id) {
+        aiomeService.permanentDelete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/test-ai")
+    @Operation(summary = "Probar AI sin guardar en BD")
+    public ResponseEntity<String> testAi(@RequestParam String question,
+                                         @RequestParam String aitype) {
+        String response = aiomeService.testAiResponse(question, aitype);
+        return ResponseEntity.ok(response);
     }
 }

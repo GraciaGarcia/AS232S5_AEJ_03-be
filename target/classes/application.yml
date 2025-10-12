@@ -1,10 +1,17 @@
 spring:
   application:
     name: AIOME
-  r2dbc:
-    url: r2dbc:postgresql://localhost:5432/aiome_db
-    username: aiome_user
-    password: karinagarcia25!?
+  datasource:
+    url: jdbc:postgresql://ep-lucky-band-acmf0c65-pooler.sa-east-1.aws.neon.tech:5432/apis?sslmode=require&channel_binding=require
+    username: neondb_owner
+    password: npg_5hATvbrqKD9o
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   ai:
     copilot:
       api-key: 70d2b19518msh27c0dc634d2bfd1p1dea1djsncacae4126f0f
@@ -17,11 +24,27 @@ spring:
 server:
   port: 8086
 
+# CORS Configuration
+cors:
+  allowed-origins: "*"
+  allowed-methods: "*"
+  allowed-headers: "*"
+
+# SpringDoc OpenAPI Configuration
 springdoc:
   api-docs:
-    path: /api-docs
+    path: /v3/api-docs
+    enabled: true
   swagger-ui:
     path: /swagger-ui.html
-
-#http://localhost:8086/swagger-ui/index.html
-# tipos GEMINI | COPILOT
+    enabled: true
+    operationsSorter: method
+    tagsSorter: alpha
+  show-actuator: false
+  packages-to-scan: edu.pe.vallegrande.AIOME.controller
+  
+# Logging (opcional, para debug)
+logging:
+  level:
+    org.springdoc: DEBUG
+    org.springframework.web: DEBUG
