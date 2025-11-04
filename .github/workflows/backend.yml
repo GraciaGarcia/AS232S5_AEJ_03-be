@@ -22,8 +22,7 @@ jobs:
       - name: 🔨 Construir y subir imagen Docker
         uses: docker/build-push-action@v5
         with:
-         context: ./backend
-         file: ./backend/Dockerfile
-
+          context: .
+          file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/springboot-ai-backend:latest
