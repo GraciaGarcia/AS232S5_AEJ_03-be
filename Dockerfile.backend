@@ -1,0 +1,26 @@
+# Etapa 1: Compilar el proyecto con Maven Wrapper
+FROM maven:3.9.5-eclipse-temurin-17 AS build
+WORKDIR /app
+
+# Copiamos todo el proyecto
+COPY . .
+
+# Dar permisos de ejecución al mvnw
+RUN chmod +x mvnw
+
+# Compilar sin tests
+RUN ./mvnw -q -DskipTests clean package
+
+# Etapa 2: Imagen final
+FROM eclipse-temurin:17-jdk
+WORKDIR /app
+
+# Copiamos el jar compilado
+COPY --from=build /app/target/*.jar app.jar
+
+# Variable de puerto del backend
+ENV SERVER_PORT=8080
+
+EXPOSE ${SERVER_PORT}
+
+ENTRYPOINT ["sh", "-c", "java -jar app.jar --server.port=${SERVER_PORT}"]
