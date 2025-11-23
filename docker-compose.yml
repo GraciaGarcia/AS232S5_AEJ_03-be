@@ -6,13 +6,13 @@ services:
     image: 60071325/gracia-ia-backend:latest
     container_name: backend-app
     ports:
-      - "${BACKEND_PORT:-8085}:8085"
+      - "${BACKEND_PORT:-8080}:8080"
     environment:
-      - PORT=8085
-      - SERVER_URL=http://localhost:${BACKEND_PORT:-8085}
+      - PORT=8080
+      - SERVER_URL=https://ubiquitous-barnacle-69gv6x755gjq3r9px-8086.app.github.dev/api/aiome
     restart: always
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8085/api/chat-messages"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "https://ubiquitous-barnacle-69gv6x755gjq3r9px-8086.app.github.dev/api/chat-messages"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -27,7 +27,8 @@ services:
     ports:
       - "${FRONTEND_PORT:-3000}:80"
     environment:
-      - VITE_API_URL=${BACKEND_URL:-http://localhost:8085}
+      # Aquí usamos directamente la URL pública de Codespaces
+      - VITE_API_URL=https://ubiquitous-barnacle-69gv6x755gjq3r9px-8086.app.github.dev
     depends_on:
       - backend
     restart: always
